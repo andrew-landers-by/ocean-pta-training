@@ -4,3 +4,4 @@ venv
 *.feather
 *.idea/
 *.ipynb_checkpoints
+*.yaml

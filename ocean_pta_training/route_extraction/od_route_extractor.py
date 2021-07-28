@@ -153,11 +153,6 @@ class OriginDestinationRouteExtractor(object):
                 for name, nodes in jobs_from_config.items()
             ]
 
-    def compute_journey_breaker_column(self):
-        """
-        <TODO>
-        """
-
     def compute_imo_to_digested_port_sequence(self):
         """
         <TODO>
@@ -258,7 +253,7 @@ class OriginDestinationRouteExtractor(object):
                     .reset_index(drop=True)
                 )
                 route_rank['unique_route_ID'] = route_rank.index + 1
-                cleansed_od_df['week'] = cleansed_od_df['TimePosition'].dt.week
+                cleansed_od_df['week'] = cleansed_od_df['TimePosition'].dt.isocalendar().week
                 cleansed_od_df = cleansed_od_df.merge(
                     route_rank[['IMO', 'route_ID', 'unique_route_ID']],
                     how='inner', on=['IMO', 'route_ID']
@@ -279,8 +274,8 @@ class OriginDestinationRouteExtractor(object):
                     self.logger.info(f"The number of cleansed routes for this OD are: {cleansed_od_df.unique_route_ID.max()}")
 
                     cleansed_od_df.to_feather(filename)
-                    routeID_stats.to_csv(routeID_stats_filename)
-                    portsequence_stats.to_csv(portsequence_stats_filename)
+                    routeID_stats.to_csv(routeID_stats_filename, index=False)
+                    portsequence_stats.to_csv(portsequence_stats_filename, index=False)
                     success_odlist.extend([f"{orig}-{dest}"])
                 else:
                     self.logger.info(f"The port sequence cleansing resulted in no training file for: {orig}-{dest}")
