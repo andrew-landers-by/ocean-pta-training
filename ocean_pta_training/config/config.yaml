@@ -1,0 +1,5 @@
+
+LOGGING:
+  level: DEBUG
+  log_to_file: True
+  local_log_file_directory: "/Users/Andrewlanders/projects/python_logs/"

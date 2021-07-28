@@ -1,1 +1,8 @@
+
+fuzzywuzzy
+haversine
+h3
 jupyterlab
+pandas
+pyarrow
+pyyaml

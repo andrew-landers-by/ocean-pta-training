@@ -2,3 +2,5 @@ venv
 *.DS_Store
 *.csv
 *.feather
+*.idea/
+*.ipynb_checkpoints

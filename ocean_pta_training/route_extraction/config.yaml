@@ -1,0 +1,14 @@
+
+JOBS:
+  KRBUK-CNQDG:
+    origin: KRBUK
+    destination: CNQDG
+  CNQDG-CNTXG:
+    origin: CNQDG
+    destination: CNTXG
+  CNSZX-PHMNL:
+    origin: CNSZX
+    destination: PHMNL
+
+LOCAL_MATERIAL_ROOT_DIR: "/Users/Andrewlanders/projects/ocean_pta/ocean-pta-training/data"
+LOCAL_OUTPUT_ROOT_DIR: "/Users/Andrewlanders/projects/ocean_pta/ocean-pta-training/output"
