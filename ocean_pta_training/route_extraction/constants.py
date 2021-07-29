@@ -7,8 +7,6 @@ JOBS: Final = "JOBS"
 JOB_NAME: Final = "name"
 JOB_ORIGIN: Final = "origin"
 JOB_DESTINATION: Final = "destination"
-LOCAL_MATERIAL_ROOT_DIR: Final = "LOCAL_MATERIAL_ROOT_DIR"
-LOCAL_OUTPUT_ROOT_DIR: Final = "LOCAL_OUTPUT_ROOT_DIR"
 OUTPUT_TRAINING_FILE_SUBDIR: Final = "od_extracts"
 OUTPUT_STATS_SUBDIR: Final = "od_stats"
 

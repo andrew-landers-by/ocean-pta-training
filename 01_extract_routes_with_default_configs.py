@@ -13,6 +13,7 @@ def main():
             path_to_ports_file=os.getenv(EnvVars.PATH_TO_PORTS_FILE.value),
             path_to_vessel_movements_data=os.getenv(EnvVars.PATH_TO_VESSEL_MOVEMENTS_DATA.value),
             path_to_od_file=os.getenv(EnvVars.PATH_TO_OD_FILE.value),
+            path_to_output_dir=os.getenv(EnvVars.PATH_TO_OUTPUT_DIRECTORY.value),
             config_path=os.getenv(EnvVars.CONFIG_PATH.value)
         )
         feature_extractor.run()

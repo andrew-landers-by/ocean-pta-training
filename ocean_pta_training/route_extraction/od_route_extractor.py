@@ -15,8 +15,7 @@ from typing import Dict, List, Optional, Tuple, Union
 from .constants import (
     CONFIG_FILE_DEFAULT_FILENAME, IMO,
     JOBS, JOB_NAME, JOB_ORIGIN, JOB_DESTINATION,
-    JOURNEY_BREAKER,
-    LOCAL_OUTPUT_ROOT_DIR, OUTPUT_TRAINING_FILE_SUBDIR, OUTPUT_STATS_SUBDIR,
+    JOURNEY_BREAKER, OUTPUT_TRAINING_FILE_SUBDIR, OUTPUT_STATS_SUBDIR,
     MAPPED_PORT, PORT, RANGE_START, RANGE_LENGTH, TIME_POSITION
 )
 from .data_objects import VesselPortSequence
@@ -69,6 +68,7 @@ class OriginDestinationRouteExtractor(object):
                  path_to_ports_file: str,
                  path_to_vessel_movements_data: str,
                  path_to_od_file: str,
+                 path_to_output_dir: str,
                  config_path: Optional[str] = None):
         """
         NOTE: Executing the constructor will automatically load the historical
@@ -84,7 +84,7 @@ class OriginDestinationRouteExtractor(object):
         #  which routes to extract and/or configure various settings
         self.config = self.set_config(config_path)
 
-        self.manage_local_file_dirs()
+        self.manage_local_file_dirs(path_to_output_dir)
         self.set_jobs()
 
         # Load data structures from external files
@@ -119,11 +119,11 @@ class OriginDestinationRouteExtractor(object):
             route_threshold_od=MINIMUM_ROUTE_OBSERVATIONS_FOR_INCLUSION
         )
 
-    def manage_local_file_dirs(self):
+    def manage_local_file_dirs(self, local_output_dir: str):
         """
         Ensure output directories exist; create them, if necessary
         """
-        self.output_root_dir = self.config.get(LOCAL_OUTPUT_ROOT_DIR)
+        self.output_root_dir = local_output_dir
         if not os.path.isdir(self.output_root_dir):
             os.makedirs(self.output_root_dir)
 
