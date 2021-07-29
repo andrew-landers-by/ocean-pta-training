@@ -3,6 +3,8 @@ fuzzywuzzy
 haversine
 h3
 jupyterlab
+lightgbm
 pandas
 pyarrow
 pyyaml
+sklearn

@@ -16,7 +16,7 @@ class Keys:
 
 def load_config() -> dict:
     """
-    Load configurations for a YAML file
+    Load configurations from a YAML file
     """
     yaml_file_path = os.path.join(
         os.path.dirname(__file__), CONFIG_FILE_NAME

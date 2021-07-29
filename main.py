@@ -1,15 +1,13 @@
 import logging
 import os
-from env import EnvVars, set_env
-from ocean_pta_training import OriginDestinationRouteExtractor
-
-ENV_PATH: str = ".env"
+from env import ENV_PATH, EnvVars, set_env
+from ocean_pta_training import ModelTrainer, OriginDestinationRouteExtractor
 
 def main():
-    set_env(ENV_PATH)
+    set_env()
     logger = logging.getLogger(__name__)
-    logger.info("BEGINNING AN INCREMENTAL DATA EXTRACTION PROCESS FOR OCEAN PTA")
 
+    # Extract training data for the specified origin-destination routes
     try:
         feature_extractor = OriginDestinationRouteExtractor(
             path_to_ports_file=os.getenv(EnvVars.PATH_TO_PORTS_FILE.value),
@@ -18,8 +16,24 @@ def main():
             config_path=os.getenv(EnvVars.CONFIG_PATH.value)
         )
         feature_extractor.run()
+
+    except Exception as e:
+        message = f"An unexpected error occurred while extracting the training data: {e}"
+        logger.exception(message)
+
+    # Train models
+    try:
+        trainer = ModelTrainer(
+            material_root_dir=os.getenv(EnvVars.PATH_TO_OUTPUT_DIRECTORY.value)
+        )
+        trainer.train()
+
     except Exception as e:
         logger.exception(f"Error: {e}")
+
+
+def train_models():
+    pass
 
 
 if __name__ == "__main__":

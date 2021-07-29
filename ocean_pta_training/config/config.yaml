@@ -1,4 +1,15 @@
 
+FEATURES:
+  - IMO
+  - Latitude
+  - Longitude
+  - elapsed_time
+  - week
+  - remaining_lead_time
+
+TARGET:
+  - remaining_lead_time
+
 LOGGING:
   level: DEBUG
   log_to_file: True
