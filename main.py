@@ -1,6 +1,6 @@
 import logging
 import os
-from env import ENV_PATH, EnvVars, set_env
+from env import EnvVars, set_env
 from ocean_pta_training import ModelTrainer, OriginDestinationRouteExtractor
 
 def main():
@@ -29,7 +29,8 @@ def main():
         trainer.train()
 
     except Exception as e:
-        logger.exception(f"Error: {e}")
+        message = f"An unexpected error occurred while training the models: {e}"
+        logger.exception(message)
 
 
 def train_models():
