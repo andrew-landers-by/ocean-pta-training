@@ -2,15 +2,33 @@
 > Incremental feature extraction, model training, and scoring for **Ocean PTA**
 >
 >> **Note:** This process runs locally because the MLOps pipeline and workflow is currently under development.
->> A future story is required to connect this repository with MLOps. With this in mind, azureml.core is part
+>> A future story is required to connect this repository with MLOps. With this in mind, azureml.core is
 >> included in `requirements.txt`.
 
 ## Setup
 
-### Configuration File
+### Config File
+
+The YAML config file specifies the set of routes will be processed. For item, a training file and a trained model
+will be generated upon execution of main.py.
 
 ```yaml
-
+JOBS:
+  CNLYG-CNSZX:
+    destination: CNSZX
+    origin: CNLYG
+  CNLYG-KRINC:
+    destination: KRINC
+    origin: CNLYG
+  CNQDG-PHMNL:
+    destination: PHMNL
+    origin: CNQDG
+  DEWVN-ESALG:
+    destination: ESALG
+    origin: DEWVN
+  IDJKT-USSAV:
+    destination: USSAV
+    origin: IDJKT
 ```
 
 ### Environment Variables
@@ -29,7 +47,7 @@ The following environment variables are ***optional***:
 
 | VARIABLE           | FUNCTION                       |
 |--------------------|--------------------------------|
-| `PATH_TO_LOG_FILE` | Path to the configuration file |
+| `PATH_TO_LOG_FILE_DIRECTORY` | This points to the directory where logs will be written. If excluded from the `env` file, no file handler is added. If the directory doesn't exist, a warning message is printed and no file handler is added. |
 
 ### Environment file
 
