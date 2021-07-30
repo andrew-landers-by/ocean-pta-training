@@ -1,5 +1,6 @@
+#!venv/bin/python
 import logging
-import os.path
+import os
 import pandas as pd
 import yaml
 from env import EnvVars, set_env
@@ -12,19 +13,19 @@ RANDOM_SEED: int = 64
 def main():
     set_env()
     logger = logging.getLogger(__name__)
-    logger.info("BEGINNING AN INCREMENTAL DATA EXTRACTION PROCESS FOR OCEAN PTA")
+    set_env()  # .env file is read from sys.argv[1], if given. See env.py for the default location of the .env file.
 
     try:
         config = OriginDestinationRouteExtractor.load_default_configs()
         config['JOBS'] = create_random_od_jobs(n=NUMBER_OF_ROUTES, seed=RANDOM_SEED)
-        write_config_file(config, os.getenv(EnvVars.CONFIG_PATH.value))
+        write_config_file(config, os.getenv(EnvVars.CONFIG_PATH))
 
         feature_extractor = OriginDestinationRouteExtractor(
-            path_to_ports_file=os.getenv(EnvVars.PATH_TO_PORTS_FILE.value),
-            path_to_vessel_movements_data=os.getenv(EnvVars.PATH_TO_VESSEL_MOVEMENTS_DATA.value),
-            path_to_od_file=os.getenv(EnvVars.PATH_TO_OD_FILE.value),
-            path_to_output_dir=os.getenv(EnvVars.PATH_TO_OUTPUT_DIRECTORY.value),
-            config_path=os.getenv(EnvVars.CONFIG_PATH.value)
+            path_to_ports_file=os.getenv(EnvVars.PATH_TO_PORTS_FILE),
+            path_to_vessel_movements_data=os.getenv(EnvVars.PATH_TO_VESSEL_MOVEMENTS_DATA),
+            path_to_od_file=os.getenv(EnvVars.PATH_TO_OD_FILE),
+            path_to_output_dir=os.getenv(EnvVars.PATH_TO_OUTPUT_DIRECTORY),
+            config_path=os.getenv(EnvVars.CONFIG_PATH)
         )
         feature_extractor.run()
 
@@ -43,7 +44,7 @@ def create_random_od_jobs(n: int = 1, seed: int = 1) -> Dict:
     """
     Sample from the list of known ODs to create random sample of jobs for training file extraction
     """
-    ods = pd.read_csv(os.getenv(EnvVars.PATH_TO_OD_FILE.value))
+    ods = pd.read_csv(os.getenv(EnvVars.PATH_TO_OD_FILE))
 
     return {
         od['route']: {

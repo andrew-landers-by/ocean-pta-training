@@ -5,6 +5,7 @@ import h3.api.basic_int as h3
 import os
 import numpy as np
 import logging
+import json
 import pandas as pd
 import re
 import yaml
@@ -42,6 +43,8 @@ class OriginDestinationRouteExtractor(object):
     Performs OD route extraction over a pre-determined set of routes.
     """
     jobs: List
+    successful_jobs: List
+    failed_jobs: List
 
     output_root_dir: str
     training_file_output_dir: str
@@ -112,12 +115,29 @@ class OriginDestinationRouteExtractor(object):
         # Run
         self.write_all_od_subframes(
             main_df=self.vessel_movements_df,
+            name_list=list(map(lambda j: j.get(JOB_NAME), self.jobs)),
             od_list=list(map(
                 lambda j: (j.get(JOB_ORIGIN), j.get(JOB_DESTINATION)),
                 self.jobs
             )),
             route_threshold_od=MINIMUM_ROUTE_OBSERVATIONS_FOR_INCLUSION
         )
+        # Dump success/failure data to json files
+        self.write_success_failure_json_files()
+
+    def write_success_failure_json_files(self):
+        """
+        We write success/failure jobs to JSON file
+        (write_all_od_subframes) already writes the same data to CSV
+        """
+        success_file_name = os.path.join(self.output_root_dir, "successful_jobs.json")
+        failure_file_name = os.path.join(self.output_root_dir, "failed_jobs.json")
+
+        with open(success_file_name, "w") as success_json_file:
+            json.dump(self.successful_jobs, success_json_file, indent=3)
+
+        with open(failure_file_name, "w") as failed_json_file:
+            json.dump(self.failed_jobs, failed_json_file, indent=3)
 
     def manage_local_file_dirs(self, local_output_dir: str):
         """
@@ -152,6 +172,11 @@ class OriginDestinationRouteExtractor(object):
                 }
                 for name, nodes in jobs_from_config.items()
             ]
+        else:
+            self.logger.warning("There are no jobs to process in the config file.")
+
+        self.successful_jobs = []
+        self.failed_jobs = []
 
     def compute_imo_to_digested_port_sequence(self):
         """
@@ -172,12 +197,16 @@ class OriginDestinationRouteExtractor(object):
 
     def write_all_od_subframes(self,
                                main_df: pd.DataFrame,
+                               name_list: List[str],
                                od_list: List[Tuple[str, str]],
                                route_threshold_od: int = 3):
         """
         We implement this, because get_all_od_subframes was defined
         in the notebook, but never used. This one was used to write output
         files (see blocks 70-72)
+
+        od_list existed in the original notebook; it and name_list could be replaced by simply
+        iterating through self.jobs. name_list and od_list are a transformation of the items in jobs.
         """
         self.logger.info("ATTEMPTING TO EXTRACT TRAINING DATA FOR ALL ORIGIN-DESTINATION PAIRS IN JOBS")
 
@@ -189,7 +218,8 @@ class OriginDestinationRouteExtractor(object):
 
         success_odlist = []
         failed_odlist = []
-        for orig, dest in od_list:
+        for idx, (orig, dest) in enumerate(od_list):
+            name = name_list[idx]
             slicelist = []
             routeidlist = []
             odlist = []
@@ -276,12 +306,15 @@ class OriginDestinationRouteExtractor(object):
                     cleansed_od_df.to_feather(filename)
                     routeID_stats.to_csv(routeID_stats_filename, index=False)
                     portsequence_stats.to_csv(portsequence_stats_filename, index=False)
+                    self.successful_jobs.append({JOB_NAME: name, JOB_ORIGIN: orig, JOB_DESTINATION: dest})
                     success_odlist.extend([f"{orig}-{dest}"])
                 else:
                     self.logger.info(f"The port sequence cleansing resulted in no training file for: {orig}-{dest}")
+                    self.failed_jobs.append({JOB_NAME: name, JOB_ORIGIN: orig, JOB_DESTINATION: dest})
                     failed_odlist.extend([f"{orig}-{dest}"])
             else:
                 self.logger.info(f"The movement extraction resulted in no training file for: {orig}-{dest}")
+                self.failed_jobs.append({JOB_NAME: name, JOB_ORIGIN: orig, JOB_DESTINATION: dest})
                 failed_odlist.extend([f"{orig}-{dest}"])
 
         # Write success/failure ODs to file

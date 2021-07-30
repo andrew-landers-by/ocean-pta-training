@@ -1,16 +1,10 @@
 JOBS:
-  CNLYG-CNSZX:
-    destination: CNSZX
-    origin: CNLYG
   CNLYG-KRINC:
     destination: KRINC
     origin: CNLYG
   CNQDG-PHMNL:
     destination: PHMNL
     origin: CNQDG
-  DEWVN-ESALG:
-    destination: ESALG
-    origin: DEWVN
   IDJKT-USSAV:
     destination: USSAV
     origin: IDJKT

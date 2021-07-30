@@ -4,6 +4,7 @@ h3
 jupyterlab
 lightgbm
 pandas
+python-Levenshtein
 pyarrow
 pyyaml
 sklearn
