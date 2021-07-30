@@ -3,7 +3,7 @@ import os
 import sys
 from datetime import date
 from typing import Optional
-from . import configs, ConfigKeys
+from . import Environment, configs, ConfigKeys, EnvVars
 
 logger = logging.getLogger(__name__)
 
@@ -48,16 +48,7 @@ def generate_logging_file_name() -> str:
 
 def get_logging_file_path() -> Optional[str]:
     """Retrieve the local logging file"""
-    logging_dir: str = (
-        configs.get(ConfigKeys.LOGGING)
-        .get(ConfigKeys.LOCAL_LOG_FILE_DIRECTORY)
-    )
-    if logging_dir and os.path.isdir(logging_dir):
-        return os.path.join(logging_dir, generate_logging_file_name())
-    elif logging_dir:
-        logger.warning("Value given in configs is not a valid file path. Logging will not be sent to a file.")
-    else:
-        logger.debug("No logging file is provided in configs. Logging output will not be sent to a file.")
+    return os.getenv(Environment.Vars.PATH_TO_LOG_FILE)
 
 def set_logging_config():
     """Set logging level. We get this from configs."""

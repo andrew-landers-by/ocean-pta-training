@@ -12,7 +12,6 @@ class Keys:
     LOGGING = "LOGGING"
     LOGGING_LEVEL = "level"
     DO_LOG_TO_FILE = "log_to_file"
-    LOCAL_LOG_FILE_DIRECTORY = "local_log_file_directory"
 
 def load_config() -> dict:
     """

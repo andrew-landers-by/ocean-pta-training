@@ -1,6 +1,26 @@
 import os
 import sys
 
+class Environment:
+
+    PATH = ".env"
+
+    class Vars:
+        CONFIG_PATH = "CONFIG_PATH"
+        PATH_TO_PORTS_FILE = "PATH_TO_PORTS_FILE"
+        PATH_TO_VESSEL_MOVEMENTS_DATA = "PATH_TO_VESSEL_MOVEMENTS_DATA"
+        PATH_TO_OD_FILE = "PATH_TO_OD_FILE"
+        PATH_TO_OUTPUT_DIRECTORY = "PATH_TO_OUTPUT_DIRECTORY"
+        PATH_TO_LOG_FILE = "PATH_TO_LOG_FILE"
+
+    @classmethod
+    def set(cls):
+        with open(cls.PATH, 'r') as env_file:
+            for line in env_file.readlines():
+                var, value = line.strip().split("=")
+                os.environ[var] = value
+
+
 ENV_PATH: str = ".env"  # define the default location of the .env file
 
 class EnvVars:
@@ -9,6 +29,7 @@ class EnvVars:
     PATH_TO_VESSEL_MOVEMENTS_DATA = "PATH_TO_VESSEL_MOVEMENTS_DATA"
     PATH_TO_OD_FILE = "PATH_TO_OD_FILE"
     PATH_TO_OUTPUT_DIRECTORY = "PATH_TO_OUTPUT_DIRECTORY"
+    PATH_TO_LOG_FILE = "PATH_TO_LOG_FILE"
 
 def set_env():
     """

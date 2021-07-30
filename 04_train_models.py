@@ -1,17 +1,17 @@
 #!venv/bin/python
 import logging
 import os
-from env import EnvVars, set_env
-from ocean_pta_training import ModelTrainer
+from ocean_pta_training import Environment, ModelTrainer
 
 def main():
-    set_env()  # .env file is read from sys.argv[1], if given. See env.py for the default location of the .env file.
+    # .env file is read from sys.argv[1], if given. See env.py for the default location of the .env file.
+    Environment.set()
     logger = logging.getLogger(__name__)
     logger.info("Training models")
 
     try:
         trainer = ModelTrainer(
-            material_root_dir=os.getenv(EnvVars.PATH_TO_OUTPUT_DIRECTORY)
+            material_root_dir=os.getenv(Environment.Vars.PATH_TO_OUTPUT_DIRECTORY)
         )
         trainer.train()
 
