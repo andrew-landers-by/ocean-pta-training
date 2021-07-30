@@ -11,11 +11,12 @@ class Environment:
         PATH_TO_VESSEL_MOVEMENTS_DATA = "PATH_TO_VESSEL_MOVEMENTS_DATA"
         PATH_TO_OD_FILE = "PATH_TO_OD_FILE"
         PATH_TO_OUTPUT_DIRECTORY = "PATH_TO_OUTPUT_DIRECTORY"
-        PATH_TO_LOG_FILE = "PATH_TO_LOG_FILE"
+        PATH_TO_LOG_FILE_DIRECTORY = "PATH_TO_LOG_FILE_DIRECTORY"
 
     @classmethod
     def set(cls):
-        with open(cls.PATH, 'r') as env_file:
+        env_path: str = sys.argv[1].strip() if len(sys.argv) > 1 else cls.PATH
+        with open(env_path, 'r') as env_file:
             for line in env_file.readlines():
                 var, value = line.strip().split("=")
                 os.environ[var] = value
@@ -37,11 +38,3 @@ def set_env():
     1) value of sys.argv[1], if given
     2) .env file in the default path
     """
-    env_path: str = ENV_PATH
-    if len(sys.argv) > 1:
-        env_path = sys.argv[1].strip()
-
-    with open(env_path, 'r') as env_file:
-        for line in env_file.readlines():
-            var, value = line.strip().split("=")
-            os.environ[var] = value

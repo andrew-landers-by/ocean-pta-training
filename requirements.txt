@@ -1,3 +1,4 @@
+azureml.core
 fuzzywuzzy
 haversine
 h3

@@ -12,4 +12,3 @@ TARGET:
 
 LOGGING:
   level: DEBUG
-  log_to_file: True
