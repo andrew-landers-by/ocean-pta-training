@@ -81,7 +81,6 @@ class OriginDestinationRouteExtractor(object):
         """
 
         self.logger = logging.getLogger(f"{__name__}.{__class__.__name__}")
-        self.logger.info(f"Initializing {type(self).__name__}")
 
         # You can optionally overwrite default configs to specify
         #  which routes to extract and/or configure various settings
@@ -98,8 +97,6 @@ class OriginDestinationRouteExtractor(object):
         # Compute calculated data structures
         self.set_port_to_mapped_port()
         self.load_od_list_df(path_to_od_file)
-
-        self.logger.info(f"Successfully initialized {type(self).__name__}")
 
     def run(self):
         """
@@ -122,8 +119,27 @@ class OriginDestinationRouteExtractor(object):
             )),
             route_threshold_od=MINIMUM_ROUTE_OBSERVATIONS_FOR_INCLUSION
         )
-        # Dump success/failure data to json files
+        self.log_successful_and_failed_jobs()
+        self.log_metrics()
         self.write_success_failure_json_files()
+
+    def log_metrics(self):
+        """Log a message to info level describing counts/stats"""
+        pass  # TODO
+
+    def log_successful_and_failed_jobs(self):
+        """
+        Log messages to info level describing which jobs succeeded and which failed.
+        """
+        success_msg = f"The following feature feature extraction jobs were SUCCESSFUL: "
+        success_msg = f"{success_msg}{json.dumps(self.successful_jobs, indent=3)}"
+        success_msg = f"\n{success_msg}\n"  # add some padding
+        self.logger.info(success_msg)
+
+        failure_msg = f"\nThe following feature feature extraction jobs were UNSUCCESSFUL: "
+        failure_msg = f"{failure_msg}{json.dumps(self.failed_jobs, indent=3)}"
+        failure_msg = f"\n{failure_msg}\n"  # add some padding
+        self.logger.info(failure_msg)
 
     def write_success_failure_json_files(self):
         """
