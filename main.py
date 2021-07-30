@@ -35,9 +35,5 @@ def main():
         logger.exception(message)
 
 
-def train_models():
-    pass
-
-
 if __name__ == "__main__":
     main()
