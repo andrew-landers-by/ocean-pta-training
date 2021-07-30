@@ -9,7 +9,7 @@
 
 ### Config File
 
-The YAML config file specifies the set of routes will be processed. For item, a training file and a trained model
+The YAML config file specifies the set of routes will be processed. For each item, a training file and a trained model
 will be generated upon execution of main.py.
 
 ```yaml
