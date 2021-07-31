@@ -2,7 +2,7 @@
 > Incremental feature extraction, model training, and scoring for **Ocean PTA**
 >
 >> **Note:** This process runs locally because the MLOps pipeline and workflow is currently under development.
->> A future story is required to connect this repository with MLOps. With this in mind, azureml.core is
+>> A future story is required to connect this repository with MLOps. With this in mind, `azureml.core` is
 >> included in `requirements.txt`.
 
 ## Setup
@@ -41,7 +41,7 @@ The following environment variables are ***required***:
 | `PATH_TO_PORTS_FILE`            | Local path to the data file `ports_trimmed_modified.csv`    |
 | `PATH_TO_VESSEL_MOVEMENTS_DATA` | Path to the data file `vessel_movements_with_hexes.feather` |
 | `PATH_TO_OD_FILE`               | Path to the data file `od_routes_v2.csv`                    |
-|`PATH_TO_OUTPUT_DIRECTORY`       | Location of the directory where output data will be written. The code will **NOT** create this folder for you. |
+|`PATH_TO_OUTPUT_DIRECTORY`       | Location of the directory where all output data will be written. If not provided, this will be created as `./output/`, from the project level working directory. |
 
 The following environment variables are ***optional***:
 

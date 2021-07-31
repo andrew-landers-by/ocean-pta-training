@@ -1,8 +1,10 @@
 from typing import Final
+from ..constants import DEFAULT_OUTPUT_FILE_DIRECTORY
 
 CONFIG_FILE_DEFAULT_FILENAME: Final = "config.yaml"
 
 # Config Keys
+DEFAULT_OUTPUT_FILE_DIRECTORY: Final = DEFAULT_OUTPUT_FILE_DIRECTORY  # aka inherited from the package
 JOBS: Final = "JOBS"
 JOB_NAME: Final = "name"
 JOB_ORIGIN: Final = "origin"
