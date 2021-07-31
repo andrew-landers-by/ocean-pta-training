@@ -10,5 +10,7 @@ FEATURES:
 TARGET:
   - remaining_lead_time
 
+DEFAULT_OUTPUT_FILE_DIRECTORY: "./output"
+
 LOGGING:
   level: DEBUG

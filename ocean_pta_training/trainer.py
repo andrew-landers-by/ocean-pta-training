@@ -7,7 +7,9 @@ import numpy as np
 import pandas as pd
 import pickle
 from typing import Any, Dict, List, Tuple
-from .config import configs as default_configs
+from .config import configs
+from .constants import DEFAULT_OUTPUT_FILE_DIRECTORY  # output of feature extraction is input for training
+
 
 class ModelTrainer(object):
     """
@@ -29,53 +31,56 @@ class ModelTrainer(object):
     target: str          # Response variable
     features: List[str]  # List of predictor variables
 
+    material_root_dir: str
     model_dir: str
     training_jobs: List[Dict]
 
     def __init__(self, material_root_dir: str):
 
         self.logger = logging.getLogger(f"{__file__}.{__class__.__name__}")
-        self.features = default_configs.get("FEATURES")
-        self.target = default_configs.get("TARGET")
-        self.set_model_dir(material_root_dir)
-        self.set_training_jobs(material_root_dir)
+        self.features = configs.get("FEATURES")
+        self.target = configs.get("TARGET")
+        self.set_material_root_dir(material_root_dir)
+        self.set_model_dir()
+        self.set_training_jobs()
 
-    def set_model_dir(self, material_root_dir: str) -> None:
-        """Sets the local file directory for trained models"""
-        if os.path.isdir(material_root_dir):
-            model_dir = os.path.join(material_root_dir, "models")
-            if not os.path.isdir(model_dir):
-                os.mkdir(model_dir)
+    def set_material_root_dir(self, material_root_dir: str):
+        if not material_root_dir:
+            # output of feature extraction is input for training
+            material_root_dir = configs.get(DEFAULT_OUTPUT_FILE_DIRECTORY)
+        self.material_root_dir = material_root_dir
 
-            self.model_dir = model_dir
-        else:
-            message = "Cannot create the directory for trained models because its parent does not exist."
+        if not os.path.isdir(self.material_root_dir):
+            message = "Cannot create the directory for trained models because its parent does not exist"
             self.logger.error(message)
             raise OSError(message)
 
-    def set_training_jobs(self, material_root_dir: str) -> None:
+    def set_model_dir(self) -> None:
+        """Sets the local file directory for trained models"""
+        model_dir = os.path.join(self.material_root_dir, "models")
+        if not os.path.isdir(model_dir):
+            os.mkdir(model_dir)
+        self.model_dir = model_dir
+
+    def set_training_jobs(self) -> None:
         """Construct a list of training files from the contents of the specified directory"""
         self.training_jobs = []
 
-        if os.path.isdir(material_root_dir):
-            train_data_dir = os.path.join(material_root_dir, "od_extracts")
-            if not os.path.isdir(train_data_dir):
-                message = "Training process will terminate because there is no directory for the training data. You need to run the feature extraction process first."  # noqa
-                self.logger.error(message)
-                raise OSError(message)
-
-            for file_name in os.listdir(train_data_dir):
-                file_path = os.path.join(train_data_dir, file_name)
-                if self.is_training_file(file_path):
-                    orig, dest = self.get_orig_dest_from_training_file(file_path)
-                    self.training_jobs.append({
-                        "origin": orig,
-                        "destination": dest,
-                        "training_file": file_path
-                    })
-        else:
-            message = "Cannot find the directory for model training data because its parent does not exist."
+        train_data_dir = os.path.join(self.material_root_dir, "od_extracts")
+        if not os.path.isdir(train_data_dir):
+            message = "Training process will terminate because there is no directory for the training data. You need to run the feature extraction process first."  # noqa
             self.logger.error(message)
+            raise OSError(message)
+
+        for file_name in os.listdir(train_data_dir):
+            file_path = os.path.join(train_data_dir, file_name)
+            if self.is_training_file(file_path):
+                orig, dest = self.get_orig_dest_from_training_file(file_path)
+                self.training_jobs.append({
+                    "origin": orig,
+                    "destination": dest,
+                    "training_file": file_path
+                })
 
     def get_orig_dest_from_training_file(self, file_path: str) -> Tuple[str, str]:
         """Derive origin-destination pair from the encoded file name"""

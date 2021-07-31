@@ -26,6 +26,7 @@ from .helpers import (
 )
 from .port_codes import PORT_LETTER_CHARS, JOURNEY_BREAKER_LETTER
 from .regex import intermed_port_chars_admissible
+from .. import configs as package_configs
 
 
 # Numeric constants that parameterize the algorithm
@@ -161,7 +162,7 @@ class OriginDestinationRouteExtractor(object):
         """
         # If this is not provided, it will be created at the default location (see config.yaml)
         if not local_output_dir:
-            local_output_dir = self.config.get(DEFAULT_OUTPUT_FILE_DIRECTORY)
+            local_output_dir = package_configs.get(DEFAULT_OUTPUT_FILE_DIRECTORY)
 
         self.output_root_dir = local_output_dir
         if not os.path.isdir(self.output_root_dir):

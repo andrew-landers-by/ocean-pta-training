@@ -9,5 +9,3 @@ JOBS:
   CNSZX-PHMNL:
     origin: CNSZX
     destination: PHMNL
-
-DEFAULT_OUTPUT_FILE_DIRECTORY: "./output"
