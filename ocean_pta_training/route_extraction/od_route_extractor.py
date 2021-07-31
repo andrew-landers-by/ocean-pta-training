@@ -14,7 +14,7 @@ from itertools import chain
 from haversine import haversine_vector, Unit
 from typing import Dict, List, Optional, Tuple, Union
 from .constants import (
-    CONFIG_FILE_DEFAULT_FILENAME, IMO,
+    CONFIG_FILE_DEFAULT_FILENAME, DEFAULT_OUTPUT_FILE_DIRECTORY, IMO,
     JOBS, JOB_NAME, JOB_ORIGIN, JOB_DESTINATION,
     JOURNEY_BREAKER, OUTPUT_TRAINING_FILE_SUBDIR, OUTPUT_STATS_SUBDIR,
     MAPPED_PORT, PORT, RANGE_START, RANGE_LENGTH, TIME_POSITION
@@ -71,7 +71,7 @@ class OriginDestinationRouteExtractor(object):
                  path_to_ports_file: str,
                  path_to_vessel_movements_data: str,
                  path_to_od_file: str,
-                 path_to_output_dir: str,
+                 path_to_output_dir: Optional[str] = None,
                  config_path: Optional[str] = None):
         """
         NOTE: Executing the constructor will automatically load the historical
@@ -159,6 +159,10 @@ class OriginDestinationRouteExtractor(object):
         """
         Ensure output directories exist; create them, if necessary
         """
+        # If this is not provided, it will be created at the default location (see config.yaml)
+        if not local_output_dir:
+            local_output_dir = self.config.get(DEFAULT_OUTPUT_FILE_DIRECTORY)
+
         self.output_root_dir = local_output_dir
         if not os.path.isdir(self.output_root_dir):
             os.makedirs(self.output_root_dir)
@@ -688,9 +692,9 @@ class OriginDestinationRouteExtractor(object):
         )
         return cls._load_yaml_file(config_file_path)
 
-    @staticmethod
-    def load_default_configs():
-        return OriginDestinationRouteExtractor._load_default_config()
+    @classmethod
+    def load_default_configs(cls):
+        return cls._load_default_config()
 
     @staticmethod
     def _load_yaml_file(file_path) -> Dict:

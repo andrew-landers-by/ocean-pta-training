@@ -3,6 +3,7 @@ from typing import Final
 CONFIG_FILE_DEFAULT_FILENAME: Final = "config.yaml"
 
 # Config Keys
+DEFAULT_OUTPUT_FILE_DIRECTORY: Final = "DEFAULT_OUTPUT_FILE_DIRECTORY"
 JOBS: Final = "JOBS"
 JOB_NAME: Final = "name"
 JOB_ORIGIN: Final = "origin"
