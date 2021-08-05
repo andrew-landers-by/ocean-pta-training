@@ -6,9 +6,12 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 import pickle
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from .config import configs
-from .constants import DEFAULT_OUTPUT_FILE_DIRECTORY  # output of feature extraction is input for training
+from .constants import (
+    DEFAULT_OUTPUT_FILE_DIRECTORY,  # output of feature extraction is input for training
+    JOBS
+)
 
 
 class ModelTrainer(object):
@@ -31,13 +34,16 @@ class ModelTrainer(object):
     target: str          # Response variable
     features: List[str]  # List of predictor variables
 
+    config: Optional[Dict]
     material_root_dir: str
     model_dir: str
     training_jobs: List[Dict]
 
-    def __init__(self, material_root_dir: str):
+    def __init__(self, material_root_dir: str, config: Optional[Dict]):
 
         self.logger = logging.getLogger(f"{__file__}.{__class__.__name__}")
+
+        self.config = config
         self.features = configs.get("FEATURES")
         self.target = configs.get("TARGET")
         self.set_material_root_dir(material_root_dir)
@@ -66,6 +72,11 @@ class ModelTrainer(object):
         """Construct a list of training files from the contents of the specified directory"""
         self.training_jobs = []
 
+        config_jobs = None
+        if self.config:
+            if jobs := self.config.get(JOBS):
+                config_jobs = list(map(lambda j: (j.get('origin'), j.get('destination')), jobs.values()))
+
         train_data_dir = os.path.join(self.material_root_dir, "od_extracts")
         if not os.path.isdir(train_data_dir):
             message = "Training process will terminate because there is no directory for the training data. You need to run the feature extraction process first."  # noqa
@@ -76,11 +87,16 @@ class ModelTrainer(object):
             file_path = os.path.join(train_data_dir, file_name)
             if self.is_training_file(file_path):
                 orig, dest = self.get_orig_dest_from_training_file(file_path)
-                self.training_jobs.append({
-                    "origin": orig,
-                    "destination": dest,
-                    "training_file": file_path
-                })
+                # Don't add a training job for a file that is in the output directory but not in config file
+                if config_jobs and (orig, dest) not in config_jobs:
+                    pass
+                # Otherwise add a job to train a model from that file.
+                else:
+                    self.training_jobs.append({
+                        "origin": orig,
+                        "destination": dest,
+                        "training_file": file_path
+                    })
 
     def get_orig_dest_from_training_file(self, file_path: str) -> Tuple[str, str]:
         """Derive origin-destination pair from the encoded file name"""

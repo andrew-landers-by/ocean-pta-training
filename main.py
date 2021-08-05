@@ -18,20 +18,14 @@ def main():
             config_path=os.getenv(Environment.Vars.CONFIG_PATH)
         )
         feature_extractor.run()
-
-    except Exception as e:
-        message = f"An unexpected error occurred while extracting the training data: {e}"
-        logger.exception(message)
-
-    # Train models
-    try:
         trainer = ModelTrainer(
-            material_root_dir=os.getenv(Environment.Vars.PATH_TO_OUTPUT_DIRECTORY)
+            material_root_dir=os.getenv(Environment.Vars.PATH_TO_OUTPUT_DIRECTORY),
+            config=feature_extractor.config
         )
         trainer.train()
 
     except Exception as e:
-        message = f"An unexpected error occurred while training the models: {e}"
+        message = f"An unexpected error occurred: {e}"
         logger.exception(message)
 
 
