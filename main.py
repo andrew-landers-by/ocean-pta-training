@@ -18,6 +18,8 @@ def main():
             config_path=os.getenv(Environment.Vars.CONFIG_PATH)
         )
         feature_extractor.run()
+
+        # Train models
         trainer = ModelTrainer(
             material_root_dir=os.getenv(Environment.Vars.PATH_TO_OUTPUT_DIRECTORY),
             config=feature_extractor.config
