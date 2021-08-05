@@ -70,13 +70,13 @@ pip install -r requirements.txt
 1. Use  the default location for the `.env` file:
 
 ```
-main.py
+python main.py
 ```
 
 2. Use a custom location for the `.env` file:
 
 ```
-main.py /path/to/your/environment/file
+python main.py /path/to/your/environment/file
 ```
 
 ## Future Notes
