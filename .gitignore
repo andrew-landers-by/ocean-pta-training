@@ -1,10 +1,7 @@
 venv
-.env
 *.DS_Store
 *.csv
 *.feather
 *.idea/
 *.ipynb_checkpoints
-*.yaml
 *.pickle
-*.json
