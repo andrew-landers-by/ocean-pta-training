@@ -1,0 +1,28 @@
+{
+	"workspace": {
+		"name": "lct-analyticsdev01-mlops",
+		"resource_group": "lct-analytics-dev-01",
+		"subscription_id": "5a6a63ff-a527-47dd-8809-8827ddc8693a"
+	},
+	"datasource": {
+		"type": "datalake",
+		"account_name": "mlopsadlg2store01",
+		"client_id": "9b0f80b7-4d11-4947-83da-694d1783703b",
+		"client_secret": "1etLpjGd%yYfr9KtrNM3VpM6k0",
+		"file_system": "mldata",
+		"tenant_id": "c9536685-1262-420b-a94b-4f5420284680",
+		"file_type": "delimited_files",
+		"delimiter": ",",
+		"file_path": "datasets/training_data/od_routes_v2.csv"
+	},
+	"environment": {
+		"name": "pta_mlops_v01",
+		"directory": "pta_mlops_config"
+	},
+	"compute": {
+		"name": "pta-mlops-compute-v01"
+	},
+	"experiment": {
+		"script": "train.py"
+	}
+}
