@@ -9,14 +9,14 @@ logger = logging.getLogger(f"{__name__}")
 
 
 def main():
-    Environment.set()
-    routes_df = read_in_od_jobs_from_csv()
-    config_dict = generate_yaml_config_dict(routes_df)
-    write_config_yaml(config_dict)
+    Environment.set()                                   # Read in environment variables from .env file
+    routes_df = read_in_od_jobs_from_csv()              # Read in new jobs
+    config_dict = generate_yaml_config_dict(routes_df)  # Create a config dict from these jobs
+    write_config_yaml(config_dict)                      # Write config dict to YAML file
 
 
 def write_config_yaml(config_dict: Dict) -> None:
-    """TODO"""
+    """Write config dict data to a YAML file"""
     config_yaml_file_path = os.environ.get(Environment.Vars.CONFIG_PATH)
     logger.info(f"Writing config dict to YAML file: {config_yaml_file_path}")
     with open(config_yaml_file_path, 'w') as yaml_file:
@@ -25,7 +25,7 @@ def write_config_yaml(config_dict: Dict) -> None:
 
 
 def read_in_od_jobs_from_csv() -> pd.DataFrame:
-    """TODO"""
+    """Read in list of jobs from CSV, return as a DataFrame"""
     csv_file_path = os.environ.get(Environment.Vars.PATH_TO_NEW_OD_REQUIREMENT_CSV_FILE)
     logger.info(f"Reading OD jobs from CSV file: {csv_file_path}")
     with open(csv_file_path, 'r') as csv_file:
@@ -36,7 +36,7 @@ def read_in_od_jobs_from_csv() -> pd.DataFrame:
 
 
 def generate_yaml_config_dict(routes_df: pd.DataFrame):
-    """TODO"""
+    """Extract a config dict from the contents of DataFrame routes_df"""
     logger.info("Creating a config dict using these requirements")
     config_dict = {"JOBS": {}}
     jobs_list = routes_df.apply(
@@ -54,7 +54,7 @@ def generate_yaml_config_dict(routes_df: pd.DataFrame):
 
 
 def extract_an_od_job_dict(row) -> Dict:
-    """TODO"""
+    """Take in a row of previously read-in data and extract a dict representing a single job"""
     origin_port = row.get("origin_port")
     destination_port = row.get("destination_port")
 
