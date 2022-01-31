@@ -13,4 +13,4 @@ TARGET:
 DEFAULT_OUTPUT_FILE_DIRECTORY: "./output"
 
 LOGGING:
-  level: DEBUG
+  level: INFO
