@@ -77,7 +77,7 @@ FROM 'https://oceanptastorelanadev01.blob.core.windows.net/file-share/ocean_vess
 WITH (
 	CREDENTIAL=(
         IDENTITY='Storage Account Key',
-        SECRET='81Jzccp09Jv7N6RBEWhQGTCNFbSRXcaoHYHjrRYz/aJtvUDMsCU2rQopeDi08s9W7F5tsJUWsfsP9vjypKgdFg=='
+        SECRET='<<storage_account_key>>'
     ),
 	FILE_TYPE='CSV',
 	FIRSTROW='2',
@@ -107,7 +107,7 @@ FROM 'https://oceanptastorelanadev01.blob.core.windows.net/file-share/ocean_port
 WITH (
 	CREDENTIAL=(
         IDENTITY='Storage Account Key',
-        SECRET='81Jzccp09Jv7N6RBEWhQGTCNFbSRXcaoHYHjrRYz/aJtvUDMsCU2rQopeDi08s9W7F5tsJUWsfsP9vjypKgdFg=='
+        SECRET='<<storage_account_key>>'
     ),
 	FILE_TYPE='CSV',
 	FIRSTROW='2',
