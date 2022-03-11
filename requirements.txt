@@ -1,11 +1,14 @@
+azure-storage-blob
 azureml.core
 fuzzywuzzy
 haversine
 h3
+igraph
 jupyterlab
 lightgbm
 pandas
 python-Levenshtein
 pyarrow
+pyodbc
 pyyaml
 sklearn

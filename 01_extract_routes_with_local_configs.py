@@ -18,6 +18,7 @@ def main():
             config_path=os.getenv(Environment.Vars.CONFIG_PATH)
         )
         feature_extractor.run()
+
     except Exception as e:
         logger.exception(f"Error: {e}")
 

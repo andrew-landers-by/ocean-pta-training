@@ -221,7 +221,7 @@ def cleanse_port_sequence(od_df):
             ascending=False
         )
     )
-    threshold_port_sequences = 2
+    threshold_port_sequences = 2  # previously: 2
     od_port_sequence_valid = od_port_sequence[od_port_sequence.num_routes >= threshold_port_sequences].copy()
     od_port_sequence_invalid = od_port_sequence[od_port_sequence.num_routes < threshold_port_sequences].copy()
     # print('Number of valid port sequences after threshold cut-off are: ',len(od_port_sequence_valid))
@@ -283,4 +283,4 @@ def cleanse_port_sequence(od_df):
         )
         .reset_index(drop=True)
     )
-    return od_df_valid,valid_port_sequences, od_port_sequence_valid
+    return od_df_valid,valid_port_sequences, od_port_sequence_valid, valid_port_sequences
