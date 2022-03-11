@@ -27,6 +27,7 @@ from .helpers import (
 from .port_codes import PORT_LETTER_CHARS, JOURNEY_BREAKER_LETTER
 from .regex import intermed_port_chars_admissible
 from .. import configs as package_configs
+from .. import Environment
 
 
 # Numeric constants that parameterize the algorithm
@@ -104,6 +105,7 @@ class OriginDestinationRouteExtractor(object):
         Run the feature extraction procedure on the required origin-destination routes.
         """
         # Create derived data structures needed to run write_all_od_subframes
+        self.map_destination_port()
         self.set_port_latlon_dict()
         self.mark_hexes_near_ports()
         self.compute_stopped_nearest_port_fields()
@@ -123,6 +125,10 @@ class OriginDestinationRouteExtractor(object):
         self.log_successful_and_failed_jobs()
         self.log_metrics()
         self.write_success_failure_json_files()
+
+    def map_destination_port(self):
+        """Apply mapping to incorrect port locodes. TODO: This should be read from a mapping file."""
+        self.vessel_movements_df.loc[(self.vessel_movements_df['Destination'] == 'BUSAN'), 'Destination'] = 'KRPUS'
 
     def log_metrics(self):
         """Log a message to info level describing counts/stats"""
@@ -239,6 +245,7 @@ class OriginDestinationRouteExtractor(object):
 
         success_odlist = []
         failed_odlist = []
+        combined_port_sequence_df = pd.DataFrame()
         for idx, (orig, dest) in enumerate(od_list):
             name = name_list[idx]
             slicelist = []
@@ -294,7 +301,10 @@ class OriginDestinationRouteExtractor(object):
 
                 self.logger.info(f"Movement extraction was successfully completed for: {orig}-{dest}")
 
-                cleansed_od_df, routeID_stats, portsequence_stats = cleanse_port_sequence(od_df)
+                cleansed_od_df, routeID_stats, portsequence_stats, port_sequences_df = cleanse_port_sequence(od_df)
+
+                combined_port_sequence_df = pd.concat([combined_port_sequence_df, port_sequences_df])
+
                 route_rank = (
                     cleansed_od_df
                     .groupby(['IMO', 'route_ID'])[TIME_POSITION]
@@ -342,6 +352,9 @@ class OriginDestinationRouteExtractor(object):
         # TODO: This results in re-writing previous success/failure data.
         success_df = pd.DataFrame(success_odlist, columns=['OD'])
         failed_df = pd.DataFrame(failed_odlist, columns=['OD'])
+
+        combined_port_sequence_file_path = os.environ.get(Environment.Vars.PATH_TO_COMBINED_PORT_SEQUENCE_DATA)
+        combined_port_sequence_df.to_csv(combined_port_sequence_file_path, index=False)
 
         success_df.to_csv(os.path.join(self.output_root_dir, "ods_successfully_processed.csv"),  index=False)
         failed_df.to_csv(os.path.join(self.output_root_dir, "ods_unsuccessfully_processed.csv"), index=False)

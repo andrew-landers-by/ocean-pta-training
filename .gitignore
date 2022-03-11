@@ -8,3 +8,6 @@ venv
 *.yaml
 *.pickle
 *.json
+.Rproj.user
+*.gpkg
+*.geojson
