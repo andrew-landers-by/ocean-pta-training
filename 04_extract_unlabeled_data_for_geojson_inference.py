@@ -27,12 +27,15 @@ def main():
     logger.info(f"...marking records that require remaining distance labels...")
     flag_for_remaining_distance_label(searoutes_jobs)
     logger.info(f"...{searoutes_jobs['remaining_distance_flag'].describe()}")
-    output_file_path = os.environ.get(Environment.Vars.PATH_TO_SEAROUTES_UNLABELED_DATA)
+    output_file_path = os.environ.get(Environment.Vars.PATH_TO_GEOJSON_UNLABELED_DATA)
     logger.info(f"...exporting unlabeled dataset to {output_file_path}")
     searoutes_jobs.to_feather(output_file_path)
 
 def flag_for_remaining_distance_label(movements_df: pd.DataFrame):
-    """TODO"""
+    """
+    Flag a subset of the data to be processed by geojson inference to calculate
+    the shortest ocean route and the point-of-interest flags associated with that route.
+    """
     remaining_distance_flag = pd.Series(False, index=movements_df.index)
     remaining_distance_flag.loc[0] = True
     elapsed_time = movements_df['elapsed_time']
@@ -61,12 +64,17 @@ def flag_for_remaining_distance_label(movements_df: pd.DataFrame):
     movements_df['remaining_distance_flag'] = remaining_distance_flag
 
 def calculate_time_delta(row, movements_df):
+    """
+    Calculate the time delta since the last observation,
+    at a single row of DataFrame movements_df
+    """
     if row.name == 0 or row['elapsed_time'] <= 0:
         return 0
     elif row['elapsed_time'] > 0:
         return row['elapsed_time'] - movements_df.loc[row.name - 1, 'elapsed_time']
 
 def read_in_combined_data():
+    """Read in combined OD dataset from a local .feather file"""
     feather_file_path = os.environ.get(Environment.Vars.PATH_TO_COMBINED_OD_DATA)
     try:
         with open(feather_file_path, 'rb') as feather_file:

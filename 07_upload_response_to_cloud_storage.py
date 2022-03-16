@@ -24,7 +24,8 @@ def main():
 
 def upload_csv_chunks(df: pd.DataFrame):
     """
-    TODO
+    Write the labeled data into CSV file chunks, and upload these
+    to the blob service under a single virtual directory
     """
     csv_file_names = write_csv_chunks(df)
     copy_csv_chunks_to_blob_service(csv_file_names)
@@ -33,7 +34,7 @@ def upload_csv_chunks(df: pd.DataFrame):
 
 def copy_csv_chunks_to_blob_service(csv_file_names: List[str]) -> None:
     """
-    TODO
+    See function name
     """
     blob_container_name = os.environ.get(Environment.Vars.BLOB_SERVICE_CONTAINER_NAME)
     blob_subdir = os.environ.get(Environment.Vars.OCEAN_JOURNEY_RESPONSE_BLOB_SUBDIR)
@@ -50,7 +51,7 @@ def copy_csv_chunks_to_blob_service(csv_file_names: List[str]) -> None:
 
 def write_csv_chunks(df: pd.DataFrame) -> List[str]:
     """
-    TODO
+    Export the DataFrame as a series of local CSV files of size CSV_CHUNK_SIZE.
     """
     chunk_length = CSV_CHUNK_SIZE
     chunks_processed = 0
@@ -88,7 +89,7 @@ def write_csv_chunks(df: pd.DataFrame) -> List[str]:
 
 def delete_local_csv_chunks(csv_file_names: List[str]):
     """
-    TODO
+    Delete all the local CSV file chunks
     """
     csv_file_dir = os.environ.get(Environment.Vars.OCEAN_JOURNEY_CHUNK_CSV_FILE_DIR)
     logger.info(f"Deleting local data files in directory: {csv_file_dir}")
@@ -123,16 +124,21 @@ def load_data() -> pd.DataFrame:
     )
 
 def sort_data(df: pd.DataFrame):
-    (
-        df.sort_values(
-            by=['IMO', 'OD', 'unique_route_id', 'elapsed_time'],
-            ascending=[True, True, True, True],
-            inplace=True
-        )
+    """
+    Sort the DataFrame
+    """
+    df.sort_values(
+        by=['IMO', 'OD', 'unique_route_id', 'elapsed_time'],
+        ascending=[True, True, True, True],
+        inplace=True
     )
 
 
 def load_response_data():
+    """
+    Load the combined OD dataset
+    """
+
     data_file = os.environ.get(Environment.Vars.PATH_TO_COMBINED_OD_DATA)
     logger.debug(f"Loading all od extracts data from file: {data_file}")
     return pd.read_feather(data_file)
@@ -140,7 +146,7 @@ def load_response_data():
 
 def blob_service_client() -> BlobServiceClient:
     """
-    TODO
+    Create a blob service client object from the connection string given in environment file.
     """
     conn_str = os.environ.get(Environment.Vars.BLOB_SERVICE_CONNECTION_STRING)
     return BlobServiceClient.from_connection_string(conn_str)

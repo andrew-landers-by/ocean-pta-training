@@ -17,7 +17,7 @@ def main():
 
 
 def drop_combined_training_data_table_if_it_exists(conn):
-    """TODO"""
+    """See function name"""
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_DATA_TABLE)
     sql = f"""IF OBJECT_ID(N'{schema}.{table}') IS NOT NULL DROP TABLE {schema}.{table}"""
@@ -29,9 +29,7 @@ def drop_combined_training_data_table_if_it_exists(conn):
         logger.error(f"Drop existing table failed due to {type(e).__name__}: {e}")
 
 def create_combined_training_data_table(conn):
-    """TODO"""
-    schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
-    ocean_journeys_table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_DATA_TABLE)
+    """See function name"""
     sql = create_ocean_journeys_table_sql_query()
 
     try:
@@ -45,7 +43,7 @@ def create_combined_training_data_table(conn):
 
 
 def create_ocean_journeys_table_sql_query():
-    """TODO"""
+    """See function name"""
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     ocean_journeys_table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_DATA_TABLE)
     ocean_journey_features_table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_FEATURES_TABLE)

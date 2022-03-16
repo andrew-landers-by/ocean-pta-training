@@ -12,6 +12,7 @@ def main():
 
 
 def create_ocean_journeys_features_table(conn):
+    """Create the Synapse table for ocean journey features"""
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_FEATURES_TABLE)
 
@@ -63,6 +64,7 @@ def create_ocean_journeys_features_table(conn):
 
 
 def create_ocean_journeys_response_table(conn):
+    """Create the Synapse table for ocean journey response variable(s)"""
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_RESPONSE_TABLE)
 

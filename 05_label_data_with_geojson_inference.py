@@ -34,6 +34,9 @@ def main():
         save_labeled_data(labeling_df)
 
 def label(labeling_df: pd.DataFrame):
+    """
+    Perform geojson inference labeling for shortest ocean path and point-of-interest flags.
+    """
     rows_total = len(labeling_df[labeling_df['remaining_distance_flag']].index)
     rows_complete = 0
     rows_failed = 0
@@ -61,6 +64,10 @@ def label(labeling_df: pd.DataFrame):
         batch_df = get_batch_df(labeling_df)
 
 def get_batch_df(labeling_df: pd.DataFrame):
+    """
+    Extract a subset dataframe of size BATCH_SIZE from rows
+    that haven't yet been labeled, but need to be.
+    """
     batch_df = labeling_df[
         (labeling_df['remaining_distance_flag']) &
         (~labeling_df['labeled']) &
@@ -69,9 +76,13 @@ def get_batch_df(labeling_df: pd.DataFrame):
     return batch_df[:BATCH_SIZE]
 
 def is_labeling_finished(batch_df: pd.DataFrame) -> bool:
+    """Return True if labeling is completely finished; False otherwise."""
     return len(batch_df.index) == 0
 
 def label_one_batch(batch_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Perform geojson inference on each record for 1 batch of work.
+    """
     results = calculate_shortest_path(batch_df)
 
     # Populate ocean distance, source to network distance, and network to destination distance
@@ -87,8 +98,9 @@ def label_one_batch(batch_df: pd.DataFrame) -> pd.DataFrame:
     return batch_df
 
 def prepare_unlabeled_data(labeling_df: pd.DataFrame):
-    """TODO"""
-
+    """
+    Rename columns prior to labeling; Add new columns with default values.
+    """
     labeling_df.rename(
         columns={'latitude': 'olat', 'longitude': 'olon'},
         inplace=True
@@ -107,6 +119,9 @@ def prepare_unlabeled_data(labeling_df: pd.DataFrame):
         )
 
 def mark_destination_latlon(labeling_df: pd.DataFrame):
+    """
+    Populate destination latitude/longitude for each record in labeling_df
+    """
     logger.info("...attaching destination lat/lon to unlabeled data...")
     ports_data = load_ports_data()
     df = labeling_df['OD'].str.split('-', expand=True)
@@ -124,17 +139,26 @@ def mark_destination_latlon(labeling_df: pd.DataFrame):
     labeling_df['dlon'] = df['lon']
 
 def load_ports_data() -> pd.DataFrame:
+    """
+    Load the ports file into a DataFrame
+    """
     ports_data_file_path = os.environ.get(Environment.Vars.PATH_TO_PORTS_FILE)
     return pd.read_csv(ports_data_file_path)
 
 def load_unlabeled_data() -> pd.DataFrame:
-    file_path = os.environ.get(Environment.Vars.PATH_TO_SEAROUTES_UNLABELED_DATA)
+    """
+    Load the unlabeled dataset from local feather file into a DataFrame
+    """
+    file_path = os.environ.get(Environment.Vars.PATH_TO_GEOJSON_UNLABELED_DATA)
     df = pd.read_feather(file_path)
     df['labeled'] = False
     return df
 
 def save_labeled_data(labeling_df: pd.DataFrame):
-    file_path = os.environ.get(Environment.Vars.PATH_TO_SEAROUTES_LABELED_DATA)
+    """
+    Save the labeled dataset locally as a feather file.
+    """
+    file_path = os.environ.get(Environment.Vars.PATH_TO_GEOJSON_LABELED_DATA)
     logger.info(f"Saving labeled data to file: {file_path}")
     labeling_df.to_feather(file_path)
 

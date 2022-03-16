@@ -21,6 +21,10 @@ def main():
 
 
 def save(df: pd.DataFrame):
+    """
+    Saves the combined training data locally to a path specified by
+    environment variable PATH_TO_LOCAL_TRAINING_DATA
+    """
     local_data_path = os.environ.get(Environment.Vars.PATH_TO_LOCAL_TRAINING_DATA)
     logger.info(f"Saving ocean journeys dataset locally as file: {local_data_path}")
     with open(local_data_path, 'wb') as pickle_file:

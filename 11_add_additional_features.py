@@ -17,7 +17,6 @@ def main():
 
 
 def add_additional_features() -> pd.DataFrame:
-
     od_summary: pd.DataFrame
     while_moving_od_summary: pd.DataFrame
 

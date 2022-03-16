@@ -30,6 +30,10 @@ def main():
 
 
 def exclude_anomalies(journeys_df: pd.DataFrame, anomalies: List[Dict]):
+    """
+    Remove journeys having anomalous patterns in the estimated remaining distance
+    (e.g. a very large jump in remaining distance after only a few hours timedelta
+    """
     trim_record = pd.Series(False, journeys_df.index)
     for anomaly in anomalies:
         anomaly_df = journeys_df[
@@ -46,6 +50,9 @@ def exclude_anomalies(journeys_df: pd.DataFrame, anomalies: List[Dict]):
 
 
 def exclude_outlier_remaining_lead_time(journeys_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Apply a hard cutoff on the observed value of remaining_lead_time
+    """
     cutoff = REMAINING_LEAD_TIME_CUTOFF
     return (
         journeys_df
@@ -57,6 +64,10 @@ def exclude_outlier_remaining_lead_time(journeys_df: pd.DataFrame) -> pd.DataFra
 def is_distance_step_anomalous(this_idx, this_imo, this_route_id, this_ocean_distance,
                                last_imo, last_route_id, last_ocean_distance
                                ) -> bool:
+    """
+    Return True if the change between two adjacent values of estimated ocean distance
+    is unrealistically large; otherwise return False
+    """
     distance_threshold = 5000
 
     if this_idx == 0:
@@ -71,6 +82,10 @@ def is_distance_step_anomalous(this_idx, this_imo, this_route_id, this_ocean_dis
 
 
 def flag_anomaly_journeys(journeys_df) -> List:
+    """
+    Analyze each unique journey and flag the records where remaining
+    distance is an unrealistic jump compared to the previous values.
+    """
     distance_threshold = 2500
     time_delta_threshold = 0.5
     sort_data(journeys_df)
@@ -138,6 +153,7 @@ def flag_anomaly_journeys(journeys_df) -> List:
 
 
 def sort_data(df: pd.DataFrame):
+    """Sort the dataframe by IMO, OD, unique route, and elapsed tim (required)"""
     df.sort_values(
         by=['IMO', 'OD', 'unique_route_id', 'elapsed_time'],
         inplace=True
@@ -145,6 +161,7 @@ def sort_data(df: pd.DataFrame):
 
 
 def load() -> pd.DataFrame:
+    """Load the dataset (local)"""
     local_data_path = os.environ.get(Environment.Vars.PATH_TO_LOCAL_TRAINING_DATA)
     logger.info(f"Loading ocean journeys dataset locally from file: {local_data_path}")
     with open(local_data_path, 'rb') as pickle_file:
@@ -153,6 +170,7 @@ def load() -> pd.DataFrame:
 
 
 def save(df: pd.DataFrame):
+    """Save the dataset after it has been processed."""
     local_data_path = os.environ.get(Environment.Vars.PATH_TO_LOCAL_TRAINING_DATA)
     logger.info(f"Saving ocean journeys dataset locally as file: {local_data_path}")
     with open(local_data_path, 'wb') as pickle_file:

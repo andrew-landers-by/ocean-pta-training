@@ -15,14 +15,14 @@ def main():
 
 
 def populate_tables():
-    """TODO"""
+    """Insert data into empty Synapse tables"""
     with pyodbc_connect(autocommit=True) as conn:
         populate_features_table(conn)
         populate_response_table(conn)
 
 
 def populate_features_table(conn):
-    """TODO"""
+    """Insert data into the ocean journey features in Synapse"""
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_FEATURES_TABLE)
 
@@ -41,7 +41,7 @@ def populate_features_table(conn):
 
 
 def populate_response_table(conn):
-    """TODO"""
+    """Insert data into the ocean journey response variable(s) in Synapse"""
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_RESPONSE_TABLE)
 
@@ -60,7 +60,10 @@ def populate_response_table(conn):
 
 
 def sql_query_to_populate_features_table(redact: bool = False):
-    """TODO"""
+    """
+    Build a parameterized SQL query used to insert data into the features table,
+    from source data in the storage account
+    """
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_FEATURES_TABLE)
     storage_acct_key = os.environ.get(Environment.Vars.BLOB_SERVICE_ACCESS_KEY)
@@ -123,7 +126,10 @@ def sql_query_to_populate_features_table(redact: bool = False):
 
 
 def sql_query_to_populate_response_table(redact: bool = False):
-    """TODO"""
+    """
+    Build a parameterized SQL query used to insert data into the response table,
+    from source data in the storage account
+    """
     schema = os.environ.get(Environment.Vars.SYNAPSE_SCHEMA)
     table = os.environ.get(Environment.Vars.OCEAN_JOURNEY_RESPONSE_TABLE)
     storage_acct_key = os.environ.get(Environment.Vars.BLOB_SERVICE_ACCESS_KEY)
@@ -169,7 +175,7 @@ def sql_query_to_populate_response_table(redact: bool = False):
 
 
 def truncate_table(conn, schema, table):
-    """TODO"""
+    """Truncate a relational database table"""
     cur = conn.cursor()
     sql = f"TRUNCATE TABLE {schema}.{table};"
     logger.info(f"Truncating table {schema}.{table} using sql query:\n\t{sql}")

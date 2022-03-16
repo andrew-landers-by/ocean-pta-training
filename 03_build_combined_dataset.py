@@ -49,14 +49,14 @@ def main():
 
 
 def list_od_extract_file_names() -> List[str]:
-    """TODO"""
+    """Returns a list containing the names of all OD extract files."""
     return [
         x for x in os.listdir(OD_EXTRACTS_FILE_DIR) if x.endswith(".feather")
     ]
 
 
 def prepare_od_extract_data(od_extract: pd.DataFrame) -> pd.DataFrame:
-    """TODO"""
+    """Add additional features and select columns"""
     stopped_vessel_moving_status = ['aground', 'moored', 'at anchor']
     stopped_minimum_speed = 0.5
     # Add binary flag: is the vessel currently moving?
