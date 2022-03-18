@@ -15,6 +15,7 @@ logger = logging.getLogger(f"{__name__}")
 def main():
     try:
         all_data = load()
+        all_data = all_data[:10000]
         save(all_data)
     except Exception as e:
         logger.error(f"An unexpected exception occurred: {e}")
