@@ -11,3 +11,4 @@ venv
 .Rproj.user
 *.gpkg
 *.geojson
+*__pycache__*
