@@ -11,7 +11,7 @@ logger = logging.getLogger(f"{__name__}")
 def main():
     try:
         training_data = add_additional_features()
-        print(training_data.info())
+        logger.info(training_data.info())
     except Exception as e:
         logger.error(f"An unexpected exception occurred: {e}")
 
@@ -84,14 +84,14 @@ def add_port_sequence_features(training_data: pd.DataFrame) -> pd.DataFrame:
         else:
             return od_mapped_features.loc[idx]
 
-    print("Computing avg_intermediate_ports")
+    logger.info("Computing avg_intermediate_ports")
     training_data['avg_intermediate_ports'] = (
         training_data.apply(
             lambda row: get_mapped_avg_intermediate_ports(row.name),
             axis=1
         )
     )
-    print(training_data['avg_intermediate_ports'].describe())
+    logger.info(training_data['avg_intermediate_ports'].describe())
 
     return training_data
 

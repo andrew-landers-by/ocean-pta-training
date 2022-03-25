@@ -1,10 +1,14 @@
 import os
+import logging
 import pandas as pd
+from ocean_pta_training import Environment
 from typing import List
 
 OD_EXTRACTS_FILE_DIR = "/Users/Andrewlanders/projects/ocean_pta/ocean-pta-training/output/od_extracts"
 DATA_DIR = "/Users/Andrewlanders/projects/ocean_pta/ocean-pta-training/output"
 COMBINED_DATA_FILE_NAME = "all_od_extracts.feather"
+
+logger = logging.getLogger(f"{__name__}")
 
 od_extract_selected_columns = [
     'IMO', 'MMSI', 'OD', 'unique_route_ID', 'TimePosition', 'Latitude', 'Longitude',
@@ -27,24 +31,22 @@ def main():
     # Prepare the imported dataset, and concatenate it to combined_data
     for file_name in list_od_extract_file_names():
         file_path = os.path.join(OD_EXTRACTS_FILE_DIR, file_name)
-        print(f"Opening OD data extract from file {file_path}")
+        logger.info(f"Opening OD data extract from file {file_path}")
         this_od_extract = pd.read_feather(file_path)
-        print("...performing data preparation...")
+        logger.info("...performing data preparation...")
         this_od_extract = prepare_od_extract_data(this_od_extract)
-        print("...concatenating this data to the combined dataset.")
+        logger.info("...concatenating this data to the combined dataset.")
         combined_data = pd.concat(
             [combined_data, this_od_extract],
             ignore_index=True
         )
 
     # Print a sample of rows to the terminal
-    print(f"First rows:\n{combined_data.head()}\n")
-    print(f"Last rows:\n{combined_data.tail()}\n")
+    logger.info(f"First rows:\n{combined_data.head()}\n")
+    logger.info(f"Last rows:\n{combined_data.tail()}\n")
 
-    combined_data_file_path = os.path.abspath(
-        os.path.join(DATA_DIR, COMBINED_DATA_FILE_NAME)
-    )
-    print(f"Writing the combined dataset to file at path: {combined_data_file_path}")
+    combined_data_file_path = os.environ.get(Environment.Vars.PATH_TO_COMBINED_OD_DATA)
+    logger.info(f"Writing the combined dataset to file at path: {combined_data_file_path}")
     combined_data.to_feather(combined_data_file_path)
 
 
